@@ -104,7 +104,7 @@ const WaitLogic = class {
   }
 
   updateIndicator(character) {
-    this.getIndicatorElement().innerHTML = `<div>Simulated processing...</div><div>${character}</div>`;
+    this.getIndicatorElement().innerHTML = `<div>Simulated processing...<div style="width: 100%; text-align: center;">${character}</div></div>`;
   }
 
   end() {
