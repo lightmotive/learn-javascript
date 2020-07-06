@@ -5,9 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded");
   const params = new URLSearchParams(window.location.search);
 
-  let project = "";
   if (params.has("project")) {
-    project = params.get("project") as string;
+    let project = params.get("project") as string;
 
     switch (project) {
       case "promise_wait-indicator":
