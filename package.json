@@ -9,7 +9,8 @@
     "build": "webpack --config webpack.dev.js",
     "start:watch": "npm run watch",
     "start:server": "webpack-dev-server --open --config webpack.dev.js",
-    "start": "run-p start:*"
+    "start": "run-p start:*",
+    "release": "webpack --config webpack.prod.js && git push origin master"
   },
   "repository": {
     "type": "git",
