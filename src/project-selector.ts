@@ -13,7 +13,7 @@ var projectList: ProjectItem[] = [
     key: "promise/wait-indicator",
     topic: "Promise",
     name: "Wait Indicator",
-    path: "/?project=promise%2Fwait-indicator",
+    path: "?project=promise%2Fwait-indicator",
     load: () => {
       promise_waitIndicator_load();
     },
