@@ -2,8 +2,8 @@
 
 Personal playground for learning JavaScript
 
-## Topics
+## Topics & Projects
 
 ### Promise
 
-- [Wait Indicator](https://lightmotive.github.io/learn-javascript/promise/wait-indicator.html)
+- [Wait Indicator](https://lightmotive.github.io/learn-javascript/dist/?project=promise_wait-indicator)

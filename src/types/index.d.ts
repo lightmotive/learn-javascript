@@ -1,0 +1,3 @@
+interface IDocument {
+  initialize: () => void;
+}
