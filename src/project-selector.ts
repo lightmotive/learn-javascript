@@ -77,9 +77,9 @@ class ProjectDocument implements Project {
 }
 
 function getPathPrefix() {
-  if (window.location.hostname.indexOf("github.io") !== -1) {
-    return "dist";
-  }
+  // if (window.location.hostname.indexOf("github.io") !== -1) {
+  //   return "dist";
+  // }
   return "";
 }
 
