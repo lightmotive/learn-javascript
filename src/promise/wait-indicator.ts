@@ -1,18 +1,21 @@
 import { Event } from "../Event";
 
-interface WaitIndicator {
-  show(inPlaceOfElement: HTMLElement): void;
+export interface WaitIndicator {
+  show(
+    inPlaceOfElement: HTMLElement,
+    cancelCallback?: (e: UIEvent) => void
+  ): void;
   progress(): void;
   hide(): void;
 }
 
-interface WaitLogic<T> {
+export interface WaitLogic<T> {
   start(forElement: HTMLElement): Promise<T>;
-  cancel(): void;
+  cancel(e: UIEvent): void;
   end(): void;
 }
 
-class WaitIndicatorText implements WaitIndicator {
+export class WaitIndicatorText implements WaitIndicator {
   constructor() {}
 
   private inPlaceOfElement?: HTMLElement;
@@ -21,9 +24,14 @@ class WaitIndicatorText implements WaitIndicator {
   private waitIndicatorElement?: HTMLDivElement;
   private indicatorPosition = 0;
 
-  private createWaitElement(): HTMLElement {
+  private createWaitElement(
+    cancelCallback?: (e: UIEvent) => void
+  ): HTMLElement {
     let waitElement = document.createElement("div");
-    waitElement.innerText = "Simulated processing...";
+    waitElement.innerText = "Simulated wait...";
+    if (cancelCallback) {
+      waitElement.appendChild(this.createWaitCancelElement(cancelCallback));
+    }
     waitElement.appendChild(this.createWaitIndicatorElement());
     this.waitElement = waitElement;
     return waitElement;
@@ -39,7 +47,26 @@ class WaitIndicatorText implements WaitIndicator {
     return waitIndicatorElement;
   }
 
-  show(inPlaceOfElement: HTMLElement): void {
+  private createWaitCancelElement(
+    cancelCallback?: (e: UIEvent) => void
+  ): HTMLButtonElement {
+    let cancelButton = document.createElement("button");
+    cancelButton.innerText = "Cancel";
+    cancelButton.style.marginLeft = "10px";
+    cancelButton.onclick = (e) => {
+      if (!cancelCallback) {
+        return false;
+      }
+      cancelCallback(e);
+      return true;
+    };
+    return cancelButton;
+  }
+
+  show(
+    inPlaceOfElement: HTMLElement,
+    cancelCallback?: (e: UIEvent) => void
+  ): void {
     this.inPlaceOfElement = inPlaceOfElement;
     this.inPlaceOfElementDisplayBeforeHide = inPlaceOfElement.style.display;
     inPlaceOfElement.style.display = "none";
@@ -48,7 +75,11 @@ class WaitIndicatorText implements WaitIndicator {
     if (!parentNode) {
       return;
     }
-    parentNode.insertBefore(this.createWaitElement(), inPlaceOfElement);
+
+    parentNode.insertBefore(
+      this.createWaitElement(cancelCallback),
+      inPlaceOfElement
+    );
   }
 
   private getIndicatorHtml(): string {
@@ -89,8 +120,8 @@ class WaitIndicatorText implements WaitIndicator {
   }
 }
 
-class WaitLogicSimulated implements WaitLogic<Date> {
-  private simulatedWaitMs = 3000;
+export class WaitLogicSimulated implements WaitLogic<Date> {
+  private simulatedWaitMs = 2000;
   private indicatorUpdateIntervalMs = 100;
 
   private waitInterval?: number;
@@ -98,23 +129,54 @@ class WaitLogicSimulated implements WaitLogic<Date> {
 
   constructor(private waitIndicator: WaitIndicator) {}
 
+  private startResolve?: (value?: Date) => void;
+  private startReject?: (reason?: any) => void;
+
   start(forElement: HTMLElement): Promise<Date> {
-    let clickStartTime = new Date();
-    this.waitIndicator.show(forElement);
-
-    return new Promise((resolve, reject) => {
-      this.waitTimeout = setTimeout(() => {
-        resolve(clickStartTime);
-      }, this.simulatedWaitMs);
-
-      this.waitInterval = setInterval(() => {
-        this.waitIndicator.progress();
-      }, this.indicatorUpdateIntervalMs);
+    this.waitIndicator.show(forElement, (e) => {
+      this.cancel(e);
     });
+
+    let promise = new Promise<Date>((resolve, reject) => {
+      this.startResolve = resolve;
+      this.startReject = reject;
+    });
+
+    this.startWait();
+    this.startWaitProgressUpdater();
+
+    return promise;
   }
 
-  cancel() {
+  private startWait(): void {
+    let clickStartTime = new Date();
+    this.waitTimeout = setTimeout(() => {
+      if (!this.startResolve) {
+        return;
+      }
+      this.startResolve(clickStartTime);
+    }, this.simulatedWaitMs);
+  }
+
+  private startWaitProgressUpdater() {
+    this.waitInterval = setInterval(() => {
+      this.waitIndicator.progress();
+    }, this.indicatorUpdateIntervalMs);
+  }
+
+  cancel(e: UIEvent) {
     window.clearTimeout(this.waitTimeout);
+    this.end();
+
+    if (this.startReject) {
+      this.startReject(
+        new Error(
+          `Wait canceled due to ${(e.currentTarget as HTMLElement).innerText} ${
+            e.type
+          }`
+        )
+      );
+    }
   }
 
   end() {
@@ -174,11 +236,15 @@ class ProjectDocument implements Project {
           (new Date().getTime() - data.getTime()) / 1000
         );
         setTimeout(() => {
-          alert(`You clicked the button ${elapsedSeconds} seconds ago.`);
+          alert(
+            `Thanks for waiting. You clicked the "Try me!" button ${elapsedSeconds} seconds ago.`
+          );
         }, 0);
       })
       .catch((e) => {
-        alert(e.message);
+        setTimeout(() => {
+          alert(e.message);
+        }, 1);
       })
       .finally(() => {
         this.waitLogic.end();
