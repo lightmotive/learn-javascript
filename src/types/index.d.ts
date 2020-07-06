@@ -1,3 +1,3 @@
-interface IDocument {
+interface Project {
   initialize: () => void;
 }
