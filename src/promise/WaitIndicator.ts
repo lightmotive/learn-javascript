@@ -6,6 +6,7 @@ export interface WaitIndicator {
 export interface WaitIndicatorConstructor {
   new (
     inPlaceOfElement: HTMLElement,
+    waitMessageHTML: string,
     cancelCallback?: (e: UIEvent) => void
   ): WaitIndicator;
 }

@@ -6,21 +6,27 @@ export class UserCanceledEvent {
 }
 
 export class WaitLogicSimulated implements WaitLogic<Date> {
-  private simulatedWaitMs = 5000;
-  private indicatorUpdateIntervalMs = 100;
   private waitInterval?: number;
   private waitTimeout?: number;
   private waitIndicator?: WaitIndicator;
 
-  constructor(private waitIndicatorConstructor: WaitIndicatorConstructor) {}
+  constructor(
+    private waitIndicatorConstructor: WaitIndicatorConstructor,
+    private waitMilliseconds: number = 5000,
+    private indicatorUpdateIntervalMilliseconds: number = 100
+  ) {}
 
   private startResolve?: (value?: Date) => void;
   private startReject?: (reason?: any) => void;
 
-  start(forElement: HTMLElement): Promise<Date> {
-    this.waitIndicator = new this.waitIndicatorConstructor(forElement, (e) => {
-      this.cancel(e);
-    });
+  start(forElement: HTMLElement, waitMessageHTML: string): Promise<Date> {
+    this.waitIndicator = new this.waitIndicatorConstructor(
+      forElement,
+      waitMessageHTML,
+      (e) => {
+        this.cancel(e);
+      }
+    );
     this.waitIndicator.show();
 
     let promise = new Promise<Date>((resolve, reject) => {
@@ -41,13 +47,13 @@ export class WaitLogicSimulated implements WaitLogic<Date> {
         return;
       }
       this.startResolve(clickStartTime);
-    }, this.simulatedWaitMs);
+    }, this.waitMilliseconds);
   }
 
   private startWaitProgressUpdater() {
     this.waitInterval = setInterval(() => {
       this.waitIndicator?.progress();
-    }, this.indicatorUpdateIntervalMs);
+    }, this.indicatorUpdateIntervalMilliseconds);
   }
 
   cancel(e: UIEvent) {

@@ -3,23 +3,32 @@ import { WaitIndicator } from "./WaitIndicator";
 export class WaitIndicatorText implements WaitIndicator {
   constructor(
     private inPlaceOfElement: HTMLElement,
+    private waitMessageHTML: string,
     private cancelCallback?: (e: UIEvent) => void
   ) {}
 
   private inPlaceOfElementDisplayBeforeHide: string = "block";
   private waitElement?: HTMLDivElement;
+  private waitMessageElement?: HTMLSpanElement;
   private waitIndicatorElement?: HTMLDivElement;
   private indicatorPosition = 0;
 
   private createWaitElement(): HTMLElement {
     let waitElement = document.createElement("div");
-    waitElement.innerText = "Simulated wait...";
+    waitElement.appendChild(this.createWaitMessageElement());
     if (this.cancelCallback) {
       waitElement.appendChild(this.createWaitCancelElement());
     }
     waitElement.appendChild(this.createWaitIndicatorElement());
     this.waitElement = waitElement;
     return waitElement;
+  }
+
+  private createWaitMessageElement(): HTMLSpanElement {
+    let waitMessageElement = document.createElement("span");
+    waitMessageElement.innerHTML = this.waitMessageHTML;
+    this.waitMessageElement = waitMessageElement;
+    return waitMessageElement;
   }
 
   private createWaitIndicatorElement(): HTMLDivElement {

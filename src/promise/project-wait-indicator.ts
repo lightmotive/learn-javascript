@@ -25,7 +25,7 @@ class WaitIndicator implements Project {
     let buttonText = button.innerText;
 
     this.waitLogic
-      .start(button)
+      .start(button, "There's always a little time to breathe...")
       .then((data) => {
         this.buttonClickResolved(buttonText, data);
       })
