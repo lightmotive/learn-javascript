@@ -1,6 +1,6 @@
 import { WaitLogic } from "./WaitLogic";
 import { WaitIndicatorText } from "./WaitIndicatorText";
-import { WaitLogicSimulated } from "./WaitLogicSimulated";
+import { WaitLogicSimulated, UserCanceledEvent } from "./WaitLogicSimulated";
 import { DocumentWithButton } from "../DocumentWithButton";
 import { DocumentWithButtonCentered } from "../DocumentWithButtonCentered";
 
@@ -38,21 +38,25 @@ class WaitIndicator implements Project {
   }
 
   private buttonClickResolved(buttonText: string, data: Date): void {
+    console.log(`${buttonText} clicked.`);
+
     let elapsedSeconds = Math.round(
       (new Date().getTime() - data.getTime()) / 5000
     );
 
     setTimeout(() => {
       alert(
-        `Are you more relaxed? You clicked "${buttonText}" ${elapsedSeconds} seconds ago.`
+        `You've been breathing deeply for ${elapsedSeconds} seconds. Are you more relaxed?`
       );
     }, 0);
   }
 
   private buttonClickRejected(reason: any): void {
     if (reason instanceof Error) {
+      alert(`Error: ${reason.message}`);
+    } else if (reason instanceof UserCanceledEvent) {
       setTimeout(() => {
-        alert(`${reason.message}. Perhaps you can relax another time?`);
+        alert(`${reason.message} Perhaps you can relax another time.`);
       }, 1);
     }
   }
@@ -60,7 +64,7 @@ class WaitIndicator implements Project {
 
 function LoadProject(): void {
   new WaitIndicator(
-    new DocumentWithButtonCentered("Click and breathe..."),
+    new DocumentWithButtonCentered("Click and breathe deeply..."),
     new WaitLogicSimulated(WaitIndicatorText)
   ).render();
 }

@@ -1,6 +1,10 @@
 import { WaitIndicator, WaitIndicatorConstructor } from "./WaitIndicator";
 import { WaitLogic } from "./WaitLogic";
 
+export class UserCanceledEvent {
+  constructor(public message: string) {}
+}
+
 export class WaitLogicSimulated implements WaitLogic<Date> {
   private simulatedWaitMs = 2000;
   private indicatorUpdateIntervalMs = 100;
@@ -51,13 +55,7 @@ export class WaitLogicSimulated implements WaitLogic<Date> {
     this.end();
 
     if (this.startReject) {
-      this.startReject(
-        new Error(
-          `Wait canceled due to ${(e.currentTarget as HTMLElement).innerText} ${
-            e.type
-          }`
-        )
-      );
+      this.startReject(new UserCanceledEvent("You canceled it."));
     }
   }
 
