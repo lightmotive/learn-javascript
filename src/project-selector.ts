@@ -23,7 +23,7 @@ var projectList: ProjectItem[] = [
 class ProjectDocument implements Project {
   constructor(private projectList: ProjectItem[]) {}
 
-  initialize() {
+  render() {
     this.initializeBody();
     this.initializeProjects();
   }
@@ -88,7 +88,7 @@ function getProjectPath(project: ProjectItem) {
 }
 
 function LoadProjectSelector(): void {
-  new ProjectDocument(projectList).initialize();
+  new ProjectDocument(projectList).render();
 }
 
 function LoadProjectByKey(key: string): void {

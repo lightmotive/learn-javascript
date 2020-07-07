@@ -1,3 +1,3 @@
 interface Project {
-  initialize: () => void;
+  render(): void;
 }

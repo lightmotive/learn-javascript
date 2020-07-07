@@ -1,8 +1,8 @@
-export interface IEvent<T> {
+export interface IEventLite<T> {
   on(handler: { (data?: T): void }): void;
   off(handler: { (data?: T): void }): void;
 }
-export class Event<T> implements IEvent<T> {
+export class EventLite<T> implements IEventLite<T> {
   private handlers: { (data?: T): void }[] = [];
 
   public on(handler: { (data?: T): void }): void {
@@ -14,10 +14,10 @@ export class Event<T> implements IEvent<T> {
   }
 
   public trigger(data?: T) {
-    this.handlers.slice(0).forEach((h) => h(data));
+    this.handlers.forEach((h) => h(data));
   }
 
-  public expose(): IEvent<T> {
+  public expose(): IEventLite<T> {
     return this;
   }
 }

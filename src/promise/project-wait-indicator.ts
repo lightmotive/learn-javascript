@@ -1,77 +1,68 @@
-import { Event } from "../Event";
 import { WaitLogic } from "./WaitLogic";
 import { WaitIndicatorText } from "./WaitIndicatorText";
 import { WaitLogicSimulated } from "./WaitLogicSimulated";
+import { DocumentWithButton } from "../DocumentWithButton";
+import { DocumentWithButtonCentered } from "../DocumentWithButtonCentered";
 
-class ProjectDocument implements Project {
-  private buttonElement?: HTMLButtonElement;
+class WaitIndicator implements Project {
+  constructor(
+    private document: DocumentWithButton,
+    private waitLogic: WaitLogic<Date>
+  ) {}
 
-  constructor(private waitLogic: WaitLogic<Date>) {}
-
-  initialize() {
-    this.initializeBody();
-    this.initializeButton();
-  }
-
-  private initializeBody() {
-    document.documentElement.style.height = "100%";
-    document.documentElement.style.zoom = "500%";
-    document.body.style.height = "100%";
-    document.body.style.display = "flex";
-    document.body.style.justifyContent = "center";
-    document.body.style.alignItems = "center";
-  }
-
-  private initializeButton() {
-    let button = document.createElement("button");
-    button.innerHTML = "Try me!";
-    button.onclick = () => {
-      this.onButtonClicked.trigger();
-    };
-
-    document.body.appendChild(button);
-    this.buttonElement = button;
-
-    this.ButtonClicked.on(() => {
-      this.buttonClicked();
+  render(): void {
+    this.document.render();
+    this.document.buttonClicked.on((button) => {
+      this.buttonClicked(button);
     });
   }
 
-  private readonly onButtonClicked = new Event<void>();
-  public get ButtonClicked() {
-    return this.onButtonClicked.expose();
-  }
-
-  private buttonClicked() {
-    if (!this.buttonElement) {
+  private buttonClicked(button: HTMLButtonElement | undefined) {
+    if (!button) {
       return;
     }
 
+    let buttonText = button.innerText;
+
     this.waitLogic
-      .start(this.buttonElement)
-      .then((data: Date) => {
-        let elapsedSeconds = Math.round(
-          (new Date().getTime() - data.getTime()) / 1000
-        );
-        setTimeout(() => {
-          alert(
-            `Thanks for waiting. You clicked the "Try me!" button ${elapsedSeconds} seconds ago.`
-          );
-        }, 0);
+      .start(button)
+      .then((data) => {
+        this.buttonClickResolved(buttonText, data);
       })
-      .catch((e) => {
-        setTimeout(() => {
-          alert(e.message);
-        }, 1);
+      .catch((reason: any) => {
+        this.buttonClickRejected(reason);
       })
       .finally(() => {
         this.waitLogic.end();
       });
   }
+
+  private buttonClickResolved(buttonText: string, data: Date): void {
+    let elapsedSeconds = Math.round(
+      (new Date().getTime() - data.getTime()) / 5000
+    );
+
+    setTimeout(() => {
+      alert(
+        `Are you more relaxed? You clicked "${buttonText}" ${elapsedSeconds} seconds ago.`
+      );
+    }, 0);
+  }
+
+  private buttonClickRejected(reason: any): void {
+    if (reason instanceof Error) {
+      setTimeout(() => {
+        alert(`${reason.message}. Perhaps you can relax another time?`);
+      }, 1);
+    }
+  }
 }
 
 function LoadProject(): void {
-  new ProjectDocument(new WaitLogicSimulated(WaitIndicatorText)).initialize();
+  new WaitIndicator(
+    new DocumentWithButtonCentered("Click and breathe..."),
+    new WaitLogicSimulated(WaitIndicatorText)
+  ).render();
 }
 
 export { LoadProject as promise_waitIndicator_load };
