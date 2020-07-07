@@ -6,7 +6,7 @@ export class UserCanceledEvent {
 }
 
 export class WaitLogicSimulated implements WaitLogic<Date> {
-  private simulatedWaitMs = 2000;
+  private simulatedWaitMs = 5000;
   private indicatorUpdateIntervalMs = 100;
   private waitInterval?: number;
   private waitTimeout?: number;

@@ -37,11 +37,11 @@ class WaitIndicator implements Project {
       });
   }
 
-  private buttonClickResolved(buttonText: string, data: Date): void {
+  private buttonClickResolved(buttonText: string, dateClicked: Date): void {
     console.log(`${buttonText} clicked.`);
 
     let elapsedSeconds = Math.round(
-      (new Date().getTime() - data.getTime()) / 5000
+      (new Date().getTime() - dateClicked.getTime()) / 1000
     );
 
     setTimeout(() => {
