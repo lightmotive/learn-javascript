@@ -2,11 +2,12 @@ import {
   ProjectItem,
   getPathPrefix,
   getProjectPath,
-  projectList,
+  getProjectList,
+  ProjectList,
 } from "./project-list";
 
 export class ProjectDemoSelector implements Project {
-  constructor(private projectList: ProjectItem[]) {}
+  constructor(private projectList: ProjectList) {}
 
   render() {
     this.initializeBody();
@@ -24,7 +25,7 @@ export class ProjectDemoSelector implements Project {
     let currentListElement: HTMLUListElement;
     let pathPrefix = getPathPrefix();
 
-    this.projectList.forEach((proj) => {
+    Object.values(this.projectList).forEach((proj) => {
       ({ currentTopicContent, currentListElement } = this.getListElement(
         proj,
         currentTopicContent,
@@ -74,7 +75,7 @@ export class ProjectDemoSelector implements Project {
 }
 
 function LoadProject(): void {
-  new ProjectDemoSelector(projectList).render();
+  new ProjectDemoSelector(getProjectList()).render();
 }
 
 export { LoadProject as projectDemoSelector_load };
