@@ -30,7 +30,7 @@ class ProjectDocument implements Project {
 
   private initializeBody() {
     let title = document.createElement("h1");
-    title.innerText = "Project Selector";
+    title.innerText = "Project Demos";
     document.body.appendChild(title);
   }
 
