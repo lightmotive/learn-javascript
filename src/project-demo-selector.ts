@@ -31,17 +31,29 @@ export class ProjectDemoSelector implements Project {
         currentListElement
       ));
       let listItem = document.createElement("li");
-      listItem.appendChild(this.getProjectLinkElement(pathPrefix, proj));
+      listItem.appendChild(this.getProjectDemoLinkElement(pathPrefix, proj));
+      let codeSeparatorSpan = document.createElement("span");
+      codeSeparatorSpan.innerText = " - ";
+      listItem.appendChild(codeSeparatorSpan);
+      listItem.appendChild(this.getProjectCodeLinkElement(proj));
       currentListElement.appendChild(listItem);
     });
   }
 
-  private getProjectLinkElement(pathPrefix: string, proj: ProjectItem) {
-    let projectLink = document.createElement("a");
-    projectLink.href = getProjectPath(proj);
-    projectLink.target = "_top";
-    projectLink.innerHTML = proj.name;
-    return projectLink;
+  private getProjectDemoLinkElement(pathPrefix: string, proj: ProjectItem) {
+    let link = document.createElement("a");
+    link.href = getProjectPath(proj);
+    link.target = "_top";
+    link.innerHTML = proj.name;
+    return link;
+  }
+
+  private getProjectCodeLinkElement(proj: ProjectItem) {
+    let link = document.createElement("a");
+    link.href = proj.codeURL;
+    link.target = "_blank";
+    link.innerHTML = "Code";
+    return link;
   }
 
   private getListElement(

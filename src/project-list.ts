@@ -10,6 +10,7 @@ export interface ProjectItem {
   name: string;
   path: string;
   load: () => void;
+  codeURL: string;
 }
 
 var projectDemoSelectorKey = "project-demo-selector";
@@ -60,6 +61,8 @@ export var projectList: ProjectItem[] = [
     load: () => {
       projectDemoSelector_load();
     },
+    codeURL:
+      "https://github.com/lightmotive/learn-javascript/blob/master/src/project-demo-selector.ts",
   },
   {
     key: "promise/wait-indicator",
@@ -69,5 +72,7 @@ export var projectList: ProjectItem[] = [
     load: () => {
       promise_waitIndicator_load();
     },
+    codeURL:
+      "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-wait-indicator.ts",
   },
 ];
