@@ -1,26 +1,11 @@
-import { promise_waitIndicator_load } from "./promise/project-wait-indicator";
+import {
+  ProjectItem,
+  getPathPrefix,
+  getProjectPath,
+  projectList,
+} from "./project-list";
 
-interface ProjectItem {
-  key: string;
-  topic: string;
-  name: string;
-  path: string;
-  load: () => void;
-}
-
-var projectList: ProjectItem[] = [
-  {
-    key: "promise/wait-indicator",
-    topic: "Promise",
-    name: "Wait Indicator",
-    path: "?project=promise%2Fwait-indicator",
-    load: () => {
-      promise_waitIndicator_load();
-    },
-  },
-];
-
-class ProjectDocument implements Project {
+export class ProjectDemoSelector implements Project {
   constructor(private projectList: ProjectItem[]) {}
 
   render() {
@@ -76,34 +61,8 @@ class ProjectDocument implements Project {
   }
 }
 
-function getPathPrefix() {
-  // if (window.location.hostname.indexOf("github.io") !== -1) {
-  //   return "dist";
-  // }
-  return "";
+function LoadProject(): void {
+  new ProjectDemoSelector(projectList).render();
 }
 
-function getProjectPath(project: ProjectItem) {
-  return `${getPathPrefix()}${project.path}`;
-}
-
-function LoadProjectSelector(): void {
-  new ProjectDocument(projectList).render();
-}
-
-function LoadProjectByKey(key: string): void {
-  let project = projectList.find((proj) => {
-    return proj.key.toLowerCase() === key.toLowerCase();
-  });
-  if (project) {
-    window.location.href = getProjectPath(project);
-    return;
-  }
-  LoadProjectSelector();
-}
-
-export {
-  LoadProjectSelector as projectSelector_load,
-  LoadProjectByKey,
-  projectList as ProjectList,
-};
+export { LoadProject as projectDemoSelector_load };
