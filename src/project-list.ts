@@ -5,7 +5,6 @@ import { promise_waitIndicatorAsyncAwait_load } from "./promise/project-wait-ind
 interface ProjectItemLocal {
   topic: string;
   name: string;
-  path: string | null;
   load: () => void;
   codeURL: string;
 }
@@ -14,12 +13,8 @@ interface ProjectListLocal {
   [key: string]: ProjectItemLocal;
 }
 
-export interface ProjectItem {
-  topic: string;
-  name: string;
+export interface ProjectItem extends ProjectItemLocal {
   path: string;
-  load: () => void;
-  codeURL: string;
 }
 
 export interface ProjectList {
@@ -65,7 +60,6 @@ var projectListLocal: ProjectListLocal = {
   "project-demo-selector": {
     topic: "Array",
     name: "Project Demo Selector",
-    path: null,
     load: () => {
       projectDemoSelector_load();
     },
@@ -75,7 +69,6 @@ var projectListLocal: ProjectListLocal = {
   "promise/wait-indicator": {
     topic: "Promise",
     name: "Wait Indicator (single promise)",
-    path: null,
     load: () => {
       promise_waitIndicator_load();
     },
@@ -85,7 +78,6 @@ var projectListLocal: ProjectListLocal = {
   "promise/wait-indicator-async-await": {
     topic: "Promise",
     name: "Wait Indicator (async/await)",
-    path: null,
     load: () => {
       promise_waitIndicatorAsyncAwait_load();
     },
