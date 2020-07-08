@@ -1,8 +1,6 @@
+import { projectDemoSelector_load } from "./project-demo-selector";
 import { promise_waitIndicator_load } from "./promise/project-wait-indicator";
-import {
-  ProjectDemoSelector,
-  projectDemoSelector_load,
-} from "./project-demo-selector";
+import { promise_waitIndicatorAsyncAwait_load } from "./promise/project-wait-indicator-async-await";
 
 export interface ProjectItem {
   key: string;
@@ -67,12 +65,23 @@ export var projectList: ProjectItem[] = [
   {
     key: "promise/wait-indicator",
     topic: "Promise",
-    name: "Wait Indicator (Single Promise)",
+    name: "Wait Indicator (single promise)",
     path: "?project=promise%2Fwait-indicator",
     load: () => {
       promise_waitIndicator_load();
     },
     codeURL:
       "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-wait-indicator.ts",
+  },
+  {
+    key: "promise/wait-indicator-async-await",
+    topic: "Promise",
+    name: "Wait Indicator (async/await)",
+    path: "?project=promise%2Fwait-indicator-async-await",
+    load: () => {
+      promise_waitIndicatorAsyncAwait_load();
+    },
+    codeURL:
+      "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-wait-indicator-async-await.ts",
   },
 ];

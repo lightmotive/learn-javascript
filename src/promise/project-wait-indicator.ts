@@ -4,10 +4,11 @@ import { WaitLogicSimulated, UserCanceledEvent } from "./WaitLogicSimulated";
 import { DocumentWithButton } from "../DocumentWithButton";
 import { DocumentWithButtonCentered } from "../DocumentWithButtonCentered";
 
-class WaitIndicator implements Project {
+export class WaitIndicator implements Project {
   constructor(
-    private document: DocumentWithButton,
-    private waitLogic: WaitLogic<Date>
+    protected document: DocumentWithButton,
+    protected waitLogic: WaitLogic<Date>,
+    protected waitCompleteMessage: any = "Are you more relaxed?"
   ) {}
 
   render(): void {
@@ -17,13 +18,7 @@ class WaitIndicator implements Project {
     });
   }
 
-  private buttonClicked(button: HTMLButtonElement | undefined) {
-    if (!button) {
-      return;
-    }
-
-    let buttonText = button.innerText;
-
+  protected executeWaitLogic(button: HTMLButtonElement, buttonText: string) {
     this.waitLogic
       .start(button, "There's always a little time to breathe...")
       .then((data) => {
@@ -37,7 +32,17 @@ class WaitIndicator implements Project {
       });
   }
 
-  private buttonClickResolved(buttonText: string, dateClicked: Date): void {
+  protected buttonClicked(button: HTMLButtonElement | undefined) {
+    if (!button) {
+      return;
+    }
+
+    let buttonText = button.innerText;
+
+    this.executeWaitLogic(button, buttonText);
+  }
+
+  protected buttonClickResolved(buttonText: string, dateClicked: Date): void {
     console.log(`${buttonText} clicked.`);
 
     let elapsedSeconds = Math.round(
@@ -46,12 +51,12 @@ class WaitIndicator implements Project {
 
     setTimeout(() => {
       alert(
-        `You've been breathing deeply for ${elapsedSeconds} seconds. Are you more relaxed?`
+        `You've been breathing deeply for ${elapsedSeconds} seconds. ${this.waitCompleteMessage}`
       );
     }, 0);
   }
 
-  private buttonClickRejected(reason: any): void {
+  protected buttonClickRejected(reason: any): void {
     if (reason instanceof Error) {
       alert(`Error: ${reason.message}`);
     } else if (reason instanceof UserCanceledEvent) {
