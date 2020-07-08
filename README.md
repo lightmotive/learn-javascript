@@ -1,6 +1,6 @@
 # learn-javascript
 
-Personal playground for learning JavaScript
+Personal playground for learning and practicing JavaScript.
 
 ## Topics & Projects
 
