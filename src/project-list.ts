@@ -58,7 +58,7 @@ export function loadProjectByKey(key: string | null): void {
  */
 const projectListLocal: ProjectListLocal = {
   "project-demo-selector": {
-    topic: "Array",
+    topic: "Associative array (map, dictionary)",
     name: "Project Demo Selector",
     load: () => {
       projectDemoSelector_load();
