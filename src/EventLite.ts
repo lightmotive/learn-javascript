@@ -13,7 +13,7 @@ export class EventLite<T> implements IEventLite<T> {
     this.handlers = this.handlers.filter((h) => h !== handler);
   }
 
-  public trigger(data?: T) {
+  public trigger(data?: T): void {
     this.handlers.forEach((h) => h(data));
   }
 

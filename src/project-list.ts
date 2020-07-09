@@ -21,11 +21,11 @@ export interface ProjectList {
   [key: string]: ProjectItem;
 }
 
-export function getPathPrefix() {
+export function getPathPrefix(): string {
   return "";
 }
 
-export function getProjectPath(project: ProjectItem) {
+export function getProjectPath(project: ProjectItem): string {
   return `${getPathPrefix()}${project.path}`;
 }
 
@@ -33,7 +33,7 @@ export function findProjectByKey(key: string | null): ProjectItem {
   if (!key) {
     return findProjectByKey(projectDemoSelectorKey);
   }
-  let project = getProjectList()[key.toLowerCase()];
+  const project = getProjectList()[key.toLowerCase()];
   if (!project) {
     return findProjectByKey(projectDemoSelectorKey);
   }
@@ -41,7 +41,7 @@ export function findProjectByKey(key: string | null): ProjectItem {
 }
 
 export function launchProjectByKey(key: string | null): void {
-  let project = findProjectByKey(key);
+  const project = findProjectByKey(key);
   if (project) {
     window.location.href = getProjectPath(project);
     return;
@@ -56,7 +56,7 @@ export function loadProjectByKey(key: string | null): void {
 /**
  * All values must be specified.
  */
-var projectListLocal: ProjectListLocal = {
+const projectListLocal: ProjectListLocal = {
   "project-demo-selector": {
     topic: "Array",
     name: "Project Demo Selector",
@@ -86,13 +86,13 @@ var projectListLocal: ProjectListLocal = {
   },
 };
 
-var projectDemoSelectorKey = Object.keys(projectListLocal)[0];
+const projectDemoSelectorKey = Object.keys(projectListLocal)[0];
 
 export function getProjectList(): ProjectList {
   //Process list
   return Object.fromEntries(
     Object.entries(projectListLocal).map(([key, val]) => {
-      let projectItem = val as ProjectItem;
+      const projectItem = val as ProjectItem;
       projectItem.path = projectItem.path
         ? projectItem.path
         : `?project=${encodeURIComponent(key)}`;

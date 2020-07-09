@@ -9,14 +9,17 @@ export class WaitIndicatorAsyncAwait extends WaitIndicator {
   constructor(
     document: DocumentWithButton,
     waitLogic: WaitLogic<Date>,
-    waitCompleteMessage: any = "Are you more relaxed and inspired?"
+    waitCompleteMessage = "Are you more relaxed and inspired?"
   ) {
     super(document, waitLogic, waitCompleteMessage);
   }
 
-  async executeWaitLogic(button: HTMLButtonElement, buttonText: string) {
+  async executeWaitLogic(
+    button: HTMLButtonElement,
+    buttonText: string
+  ): Promise<void> {
     try {
-      let data = await this.waitLogic.start(button, "Await inspiration...");
+      const data = await this.waitLogic.start(button, "Await inspiration...");
       this.buttonClickResolved(buttonText, data);
     } catch (reason) {
       this.buttonClickRejected(reason);

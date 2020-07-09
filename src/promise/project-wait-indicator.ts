@@ -8,7 +8,7 @@ export class WaitIndicator implements Project {
   constructor(
     protected document: DocumentWithButton,
     protected waitLogic: WaitLogic<Date>,
-    protected waitCompleteMessage: any = "Are you more relaxed?"
+    protected waitCompleteMessage = "Are you more relaxed?"
   ) {}
 
   render(): void {
@@ -18,13 +18,16 @@ export class WaitIndicator implements Project {
     });
   }
 
-  protected executeWaitLogic(button: HTMLButtonElement, buttonText: string) {
+  protected executeWaitLogic(
+    button: HTMLButtonElement,
+    buttonText: string
+  ): void {
     this.waitLogic
       .start(button, "There's always a little time to breathe...")
       .then((data) => {
         this.buttonClickResolved(buttonText, data);
       })
-      .catch((reason: any) => {
+      .catch((reason) => {
         this.buttonClickRejected(reason);
       })
       .finally(() => {
@@ -32,20 +35,18 @@ export class WaitIndicator implements Project {
       });
   }
 
-  protected buttonClicked(button: HTMLButtonElement | undefined) {
+  protected buttonClicked(button: HTMLButtonElement | undefined): void {
     if (!button) {
       return;
     }
 
-    let buttonText = button.innerText;
-
-    this.executeWaitLogic(button, buttonText);
+    this.executeWaitLogic(button, button.innerText);
   }
 
   protected buttonClickResolved(buttonText: string, dateClicked: Date): void {
     console.log(`${buttonText} clicked.`);
 
-    let elapsedSeconds = Math.round(
+    const elapsedSeconds = Math.round(
       (new Date().getTime() - dateClicked.getTime()) / 1000
     );
 
@@ -56,13 +57,15 @@ export class WaitIndicator implements Project {
     }, 0);
   }
 
-  protected buttonClickRejected(reason: any): void {
+  protected buttonClickRejected(reason: unknown): void {
     if (reason instanceof Error) {
       alert(`Error: ${reason.message}`);
     } else if (reason instanceof UserCanceledEvent) {
       setTimeout(() => {
         alert(`${reason.message} Perhaps you can relax another time.`);
       }, 1);
+    } else {
+      alert(reason);
     }
   }
 }

@@ -7,14 +7,14 @@ export class WaitIndicatorText implements WaitIndicator {
     private cancelCallback?: (e: UIEvent) => void
   ) {}
 
-  private inPlaceOfElementDisplayBeforeHide: string = "block";
+  private inPlaceOfElementDisplayBeforeHide = "block";
   private waitElement?: HTMLDivElement;
   private waitMessageElement?: HTMLSpanElement;
   private waitIndicatorElement?: HTMLDivElement;
   private indicatorPosition = 0;
 
   private createWaitElement(): HTMLElement {
-    let waitElement = document.createElement("div");
+    const waitElement = document.createElement("div");
     waitElement.appendChild(this.createWaitMessageElement());
     if (this.cancelCallback) {
       waitElement.appendChild(this.createWaitCancelElement());
@@ -25,14 +25,14 @@ export class WaitIndicatorText implements WaitIndicator {
   }
 
   private createWaitMessageElement(): HTMLSpanElement {
-    let waitMessageElement = document.createElement("span");
+    const waitMessageElement = document.createElement("span");
     waitMessageElement.innerHTML = this.waitMessageHTML;
     this.waitMessageElement = waitMessageElement;
     return waitMessageElement;
   }
 
   private createWaitIndicatorElement(): HTMLDivElement {
-    let waitIndicatorElement = document.createElement("div");
+    const waitIndicatorElement = document.createElement("div");
     waitIndicatorElement.style.width = "100%";
     waitIndicatorElement.style.textAlign = "center";
     waitIndicatorElement.innerHTML = this.getIndicatorHtml();
@@ -42,7 +42,7 @@ export class WaitIndicatorText implements WaitIndicator {
   }
 
   private createWaitCancelElement(): HTMLButtonElement {
-    let cancelButton = document.createElement("button");
+    const cancelButton = document.createElement("button");
     cancelButton.innerText = "Cancel";
     cancelButton.style.marginLeft = "10px";
     cancelButton.onclick = (e) => {
@@ -59,7 +59,7 @@ export class WaitIndicatorText implements WaitIndicator {
     this.inPlaceOfElementDisplayBeforeHide = this.inPlaceOfElement.style.display;
     this.inPlaceOfElement.style.display = "none";
 
-    let parentNode = this.inPlaceOfElement.parentNode;
+    const parentNode = this.inPlaceOfElement.parentNode;
     if (!parentNode) {
       return;
     }

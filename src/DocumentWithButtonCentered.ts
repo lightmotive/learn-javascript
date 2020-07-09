@@ -22,7 +22,7 @@ export class DocumentWithButtonCentered implements DocumentWithButton {
   }
 
   private initializeButton() {
-    let button = document.createElement("button");
+    const button = document.createElement("button");
     button.innerHTML = this.buttonInnerHTML;
 
     document.body.appendChild(button);

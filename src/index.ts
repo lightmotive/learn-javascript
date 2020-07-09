@@ -1,4 +1,4 @@
-import { launchProjectByKey, loadProjectByKey } from "./project-list";
+import { loadProjectByKey } from "./project-list";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded");

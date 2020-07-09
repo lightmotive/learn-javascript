@@ -17,7 +17,7 @@ export class WaitLogicSimulated implements WaitLogic<Date> {
   ) {}
 
   private startResolve?: (value?: Date) => void;
-  private startReject?: (reason?: any) => void;
+  private startReject?: (reason?: unknown) => void;
 
   start(forElement: HTMLElement, waitMessageHTML: string): Promise<Date> {
     this.waitIndicator = new this.waitIndicatorConstructor(
@@ -29,7 +29,7 @@ export class WaitLogicSimulated implements WaitLogic<Date> {
     );
     this.waitIndicator.show();
 
-    let promise = new Promise<Date>((resolve, reject) => {
+    const promise = new Promise<Date>((resolve, reject) => {
       this.startResolve = resolve;
       this.startReject = reject;
     });
@@ -41,7 +41,7 @@ export class WaitLogicSimulated implements WaitLogic<Date> {
   }
 
   private startWait(): void {
-    let clickStartTime = new Date();
+    const clickStartTime = new Date();
     this.waitTimeout = setTimeout(() => {
       if (!this.startResolve) {
         return;
@@ -56,16 +56,18 @@ export class WaitLogicSimulated implements WaitLogic<Date> {
     }, this.indicatorUpdateIntervalMilliseconds);
   }
 
-  cancel(e: UIEvent) {
+  cancel(e: UIEvent): void {
     window.clearTimeout(this.waitTimeout);
     this.end();
 
     if (this.startReject) {
-      this.startReject(new UserCanceledEvent("You canceled it."));
+      this.startReject(
+        new UserCanceledEvent(`You canceled it with a ${e.type}.`)
+      );
     }
   }
 
-  end() {
+  end(): void {
     window.clearInterval(this.waitInterval);
     this.waitIndicator?.hide();
   }
