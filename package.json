@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "watch": "webpack --watch --config webpack.dev.js",
+    "prebuild": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "webpack --config webpack.dev.js",
     "build-release": "webpack --config webpack.prod.js",
     "start:watch": "npm run watch",
@@ -26,7 +27,11 @@
   },
   "homepage": "https://github.com/lightmotive/learn-javascript#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.6.0",
+    "@typescript-eslint/parser": "^3.6.0",
     "clean-webpack-plugin": "^3.0.0",
+    "eslint": "^7.4.0",
+    "eslint-config-prettier": "^6.11.0",
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.0.4",
