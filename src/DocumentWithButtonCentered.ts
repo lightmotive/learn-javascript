@@ -17,6 +17,7 @@ export class DocumentWithButtonCentered implements DocumentWithButton {
     document.documentElement.style.zoom = "500%";
     document.body.style.height = "100%";
     document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
     document.body.style.justifyContent = "center";
     document.body.style.alignItems = "center";
   }
