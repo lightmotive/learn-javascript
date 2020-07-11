@@ -1,8 +1,8 @@
 import { WaitLogic } from "./WaitLogic";
 import { WaitIndicatorText } from "./WaitIndicatorText";
 import { WaitLogicSimulated, UserCanceledEvent } from "./WaitLogicSimulated";
-import { DocumentWithButton } from "../DocumentWithButton";
-import { DocumentWithButtonCentered } from "../DocumentWithButtonCentered";
+import { DocumentWithButton } from "../document/DocumentWithButton";
+import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
 
 export class WaitIndicator implements Project {
   constructor(

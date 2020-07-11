@@ -1,4 +1,4 @@
-import { IEventLite } from "./EventLite";
+import { IEventLite } from "../event/EventLite";
 
 export interface DocumentWithButton {
   render(): void;

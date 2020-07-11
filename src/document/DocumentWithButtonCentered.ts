@@ -1,4 +1,4 @@
-import { EventLite, IEventLite } from "./EventLite";
+import { EventLite, IEventLite } from "../event/EventLite";
 import { DocumentWithButton } from "./DocumentWithButton";
 
 export class DocumentWithButtonCentered implements DocumentWithButton {

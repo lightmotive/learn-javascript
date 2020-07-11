@@ -1,5 +1,5 @@
-import { DocumentWithButton } from "../DocumentWithButton";
-import { DocumentWithButtonCentered } from "../DocumentWithButtonCentered";
+import { DocumentWithButton } from "../document/DocumentWithButton";
+import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
 import { CharacterRangeIterator } from "./CharacterRangeIterator";
 
 export class PrintCharacterRange implements Project {
