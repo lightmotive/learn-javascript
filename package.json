@@ -7,7 +7,7 @@
     "watch": "webpack --watch --config webpack.dev.js",
     "prebuild": "npm test && npx eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "webpack --config webpack.dev.js",
-    "build-release": "webpack --config webpack.prod.js",
+    "build-release": "npm run prebuild && webpack --config webpack.prod.js",
     "start:watch": "npm run watch",
     "start:server": "webpack-dev-server --open --config webpack.dev.js",
     "start": "run-p start:*",
