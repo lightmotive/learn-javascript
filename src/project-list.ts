@@ -1,6 +1,7 @@
 import { projectDemoSelector_load } from "./project-demo-selector";
 import { promise_waitIndicator_load } from "./promise/project-wait-indicator";
 import { promise_waitIndicatorAsyncAwait_load } from "./promise/project-wait-indicator-async-await";
+import { iterator_basicIterator_load } from "./iterator/project-character-range";
 
 interface ProjectItemLocal {
   topic: string;
@@ -66,9 +67,18 @@ const projectListLocal: ProjectListLocal = {
     codeURL:
       "https://github.com/lightmotive/learn-javascript/blob/master/src/project-demo-selector.ts",
   },
+  "iterator/character-range": {
+    topic: "Iterator",
+    name: "Print character range",
+    load: () => {
+      iterator_basicIterator_load();
+    },
+    codeURL:
+      "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-character-range.ts",
+  },
   "promise/wait-indicator": {
     topic: "Promise",
-    name: "Wait Indicator (single promise)",
+    name: "Wait indicator (single promise)",
     load: () => {
       promise_waitIndicator_load();
     },
@@ -77,7 +87,7 @@ const projectListLocal: ProjectListLocal = {
   },
   "promise/wait-indicator-async-await": {
     topic: "Promise",
-    name: "Wait Indicator (async/await)",
+    name: "Wait indicator (async/await)",
     load: () => {
       promise_waitIndicatorAsyncAwait_load();
     },
