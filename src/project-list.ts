@@ -74,7 +74,7 @@ const projectListLocal: ProjectListLocal = {
       iterator_basicIterator_load();
     },
     codeURL:
-      "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-character-range.ts",
+      "https://github.com/lightmotive/learn-javascript/blob/master/src/iterator/project-character-range.ts",
   },
   "promise/wait-indicator": {
     topic: "Promise",
@@ -106,6 +106,10 @@ export function getProjectList(): ProjectList {
       projectItem.path = projectItem.path
         ? projectItem.path
         : `?project=${encodeURIComponent(key)}`;
+      projectItem.codeURL = `https://github.com/lightmotive/learn-javascript/blob/master/src/${key.replace(
+        "/",
+        "/project-"
+      )}.ts`;
       return [key, projectItem];
     })
   );
