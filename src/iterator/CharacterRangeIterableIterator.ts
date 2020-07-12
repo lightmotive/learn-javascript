@@ -9,10 +9,6 @@ export class CharacterRangeIterableIterator
     private end: string,
     private step: number = 1
   ) {
-    if (start.length !== 1 || end.length !== 1) {
-      throw new Error("start and end must be single characters");
-    }
-
     this.checkSwapStartAndEnd();
     this.initializePointers();
 
@@ -31,6 +27,9 @@ export class CharacterRangeIterableIterator
    * Automatically swap start and end if specified start comes after end.
    */
   private checkSwapStartAndEnd(): void {
+    if (this.start === "") {
+      this.start = String.fromCharCode(0);
+    }
     if (this.getCharCode(this.start) <= this.getCharCode(this.end)) {
       return;
     }

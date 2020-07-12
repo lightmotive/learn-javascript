@@ -1,10 +1,11 @@
 export type CharacterWithCode = {
   char: string;
   charCode: number;
+  step: number;
 };
 export class CharacterIterator implements Iterator<CharacterWithCode> {
   constructor(private start: string = "", private step: number = 1) {
-    if (start === "") {
+    if (!start || start === "") {
       this.start = String.fromCharCode(0);
     }
     this.initializePointers();
@@ -26,6 +27,7 @@ export class CharacterIterator implements Iterator<CharacterWithCode> {
         value: {
           char: String.fromCharCode(this.currentCharCode),
           charCode: this.currentCharCode,
+          step: this.step,
         },
       };
       this.currentCharCode += this.step;
