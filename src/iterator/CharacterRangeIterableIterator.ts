@@ -1,4 +1,9 @@
-export class CharacterRangeIterator implements IterableIterator<string> {
+import { CharacterIterator, CharacterWithCode } from "./CharacterIterator";
+
+export class CharacterRangeIterableIterator
+  implements IterableIterator<CharacterWithCode> {
+  private characterIterator: CharacterIterator;
+
   constructor(
     private start: string,
     private end: string,
@@ -10,12 +15,12 @@ export class CharacterRangeIterator implements IterableIterator<string> {
 
     this.checkSwapStartAndEnd();
     this.initializePointers();
+
+    this.characterIterator = new CharacterIterator(this.start, this.step);
   }
 
-  private currentCharCode = 0;
   private endCharCode = 0;
   private initializePointers() {
-    this.currentCharCode = this.getCharCode(this.start);
     this.endCharCode = this.getCharCode(this.end);
   }
 
@@ -34,20 +39,21 @@ export class CharacterRangeIterator implements IterableIterator<string> {
     this.end = _startOriginal;
   }
 
-  next(): IteratorResult<string> {
-    if (this.currentCharCode <= this.endCharCode) {
-      const value = {
-        done: false,
-        value: String.fromCharCode(this.currentCharCode),
-      };
-      this.currentCharCode += this.step;
-      return value;
+  next(): IteratorResult<CharacterWithCode, CharacterWithCode | null> {
+    const next = this.characterIterator.next();
+
+    if (next.done) {
+      return next;
+    }
+
+    if (next.value.charCode <= this.endCharCode) {
+      return next;
     } else {
       return { done: true, value: null };
     }
   }
 
-  [Symbol.iterator](): IterableIterator<string> {
+  [Symbol.iterator](): IterableIterator<CharacterWithCode> {
     return this;
   }
 }

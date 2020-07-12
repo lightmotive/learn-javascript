@@ -1,11 +1,12 @@
 import { DocumentWithButton } from "../document/DocumentWithButton";
 import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
-import { CharacterRangeIterator } from "./CharacterRangeIterator";
+import { CharacterRangeIterableIterator } from "./CharacterRangeIterableIterator";
+import { CharacterWithCode } from "./CharacterIterator";
 
 export class PrintCharacterRange implements Project {
   constructor(
     private document: DocumentWithButton,
-    private charRange: IterableIterator<string>
+    private charRange: IterableIterator<CharacterWithCode>
   ) {}
 
   render(): void {
@@ -17,9 +18,9 @@ export class PrintCharacterRange implements Project {
   private printIteration(): void {
     const container = this.createContainer();
 
-    for (const char of this.charRange) {
+    for (const value of this.charRange) {
       const span = document.createElement("span");
-      span.innerText = char;
+      span.innerText = value.char;
       container.appendChild(span);
     }
   }
@@ -40,7 +41,7 @@ export class PrintCharacterRange implements Project {
 function LoadProject(): void {
   new PrintCharacterRange(
     new DocumentWithButtonCentered("Print A-Z, skip 2"),
-    new CharacterRangeIterator("A", "Z", 3)
+    new CharacterRangeIterableIterator("A", "Z", 3)
   ).render();
 }
 
