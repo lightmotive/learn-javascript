@@ -16,6 +16,8 @@ export class PrintCharacterRange implements Project {
   }
 
   private printIteration(): void {
+    this.document.button.style.display = "none";
+
     const container = this.createContainer();
 
     for (const value of this.charRange) {
