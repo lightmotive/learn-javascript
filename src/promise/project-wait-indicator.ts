@@ -1,49 +1,40 @@
-import { WaitLogic } from "./WaitLogic";
+import { WaitCancelable } from "./WaitCancelable";
 import { WaitIndicatorText } from "./WaitIndicatorText";
-import { WaitLogicSimulated, UserCanceledEvent } from "./WaitLogicSimulated";
+import {
+  WaitCancelableSimulated,
+  UserCanceledEvent,
+} from "./WaitCancelableSimulated";
 import { DocumentWithButton } from "../document/DocumentWithButton";
 import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
 
 export class WaitIndicator implements Project {
   constructor(
     protected document: DocumentWithButton,
-    protected waitLogic: WaitLogic<Date>,
+    protected waitLogic: WaitCancelable<Date>,
     protected waitCompleteMessage = "Are you more relaxed?"
   ) {}
 
   render(): void {
-    this.document.render();
-    this.document.buttonClicked.on((button) => {
-      this.buttonClicked(button);
-    });
+    this.document.button.onclick = () => {
+      this.wait(this.document.button);
+    };
   }
 
-  protected executeWaitLogic(
-    button: HTMLButtonElement,
-    buttonText: string
-  ): void {
+  protected wait(button: HTMLButtonElement): void {
     this.waitLogic
       .start(button, "There's always a little time to breathe...")
       .then((data) => {
-        this.buttonClickResolved(buttonText, data);
+        this.waitResolved(button.innerText, data);
       })
       .catch((reason) => {
-        this.buttonClickRejected(reason);
+        this.waitRejected(reason);
       })
       .finally(() => {
         this.waitLogic.end();
       });
   }
 
-  protected buttonClicked(button: HTMLButtonElement | undefined): void {
-    if (!button) {
-      return;
-    }
-
-    this.executeWaitLogic(button, button.innerText);
-  }
-
-  protected buttonClickResolved(buttonText: string, dateClicked: Date): void {
+  protected waitResolved(buttonText: string, dateClicked: Date): void {
     console.log(`${buttonText} clicked.`);
 
     const elapsedSeconds = Math.round(
@@ -57,7 +48,7 @@ export class WaitIndicator implements Project {
     }, 0);
   }
 
-  protected buttonClickRejected(reason: unknown): void {
+  protected waitRejected(reason: unknown): void {
     if (reason instanceof Error) {
       alert(`Error: ${reason.message}`);
     } else if (reason instanceof UserCanceledEvent) {
@@ -73,7 +64,7 @@ export class WaitIndicator implements Project {
 function LoadProject(): void {
   new WaitIndicator(
     new DocumentWithButtonCentered("Click and breathe deeply..."),
-    new WaitLogicSimulated(WaitIndicatorText)
+    new WaitCancelableSimulated(WaitIndicatorText)
   ).render();
 }
 

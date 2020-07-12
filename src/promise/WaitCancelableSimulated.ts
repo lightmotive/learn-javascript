@@ -1,11 +1,11 @@
 import { WaitIndicator, WaitIndicatorConstructor } from "./WaitIndicator";
-import { WaitLogic } from "./WaitLogic";
+import { WaitCancelable } from "./WaitCancelable";
 
 export class UserCanceledEvent {
   constructor(public message: string) {}
 }
 
-export class WaitLogicSimulated implements WaitLogic<Date> {
+export class WaitCancelableSimulated implements WaitCancelable<Date> {
   private waitInterval?: number;
   private waitTimeout?: number;
   private waitIndicator?: WaitIndicator;

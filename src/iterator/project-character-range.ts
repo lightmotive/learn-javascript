@@ -9,18 +9,9 @@ export class PrintCharacterRange implements Project {
   ) {}
 
   render(): void {
-    this.document.render();
-    this.document.buttonClicked.on((button) => {
-      this.buttonClicked(button);
-    });
-  }
-
-  private buttonClicked(button: HTMLButtonElement | undefined): void {
-    if (!button) {
-      return;
-    }
-
-    this.printIteration();
+    this.document.button.onclick = () => {
+      this.printIteration();
+    };
   }
 
   private printIteration(): void {

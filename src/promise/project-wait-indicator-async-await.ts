@@ -1,6 +1,6 @@
-import { WaitLogic } from "./WaitLogic";
+import { WaitCancelable } from "./WaitCancelable";
 import { WaitIndicatorText } from "./WaitIndicatorText";
-import { WaitLogicSimulated } from "./WaitLogicSimulated";
+import { WaitCancelableSimulated } from "./WaitCancelableSimulated";
 import { DocumentWithButton } from "../document/DocumentWithButton";
 import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
 import { WaitIndicator } from "./project-wait-indicator";
@@ -8,21 +8,18 @@ import { WaitIndicator } from "./project-wait-indicator";
 export class WaitIndicatorAsyncAwait extends WaitIndicator {
   constructor(
     document: DocumentWithButton,
-    waitLogic: WaitLogic<Date>,
+    waitLogic: WaitCancelable<Date>,
     waitCompleteMessage = "Are you more relaxed and inspired?"
   ) {
     super(document, waitLogic, waitCompleteMessage);
   }
 
-  async executeWaitLogic(
-    button: HTMLButtonElement,
-    buttonText: string
-  ): Promise<void> {
+  async wait(button: HTMLButtonElement): Promise<void> {
     try {
       const data = await this.waitLogic.start(button, "Await inspiration...");
-      this.buttonClickResolved(buttonText, data);
+      this.waitResolved(button.innerText, data);
     } catch (reason) {
-      this.buttonClickRejected(reason);
+      this.waitRejected(reason);
     } finally {
       this.waitLogic.end();
     }
@@ -34,7 +31,7 @@ function LoadProject(): void {
     new DocumentWithButtonCentered(
       "Click, breathe deeply, and await relaxation..."
     ),
-    new WaitLogicSimulated(WaitIndicatorText)
+    new WaitCancelableSimulated(WaitIndicatorText)
   ).render();
 }
 
