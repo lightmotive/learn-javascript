@@ -1,7 +1,10 @@
-import { CharacterIterator, CharacterWithCode } from "./CharacterIterator";
+import {
+  CharacterIterator,
+  CharacterIteratorResult,
+} from "./CharacterIterator";
 
 export class CharacterRangeIterableIterator
-  implements IterableIterator<CharacterWithCode> {
+  implements IterableIterator<CharacterIteratorResult> {
   private characterIterator: CharacterIterator;
 
   constructor(
@@ -38,7 +41,10 @@ export class CharacterRangeIterableIterator
     this.end = _startOriginal;
   }
 
-  next(): IteratorResult<CharacterWithCode, CharacterWithCode | null> {
+  next(): IteratorResult<
+    CharacterIteratorResult,
+    CharacterIteratorResult | null
+  > {
     const next = this.characterIterator.next();
 
     if (next.done) {
@@ -52,7 +58,7 @@ export class CharacterRangeIterableIterator
     }
   }
 
-  [Symbol.iterator](): IterableIterator<CharacterWithCode> {
+  [Symbol.iterator](): IterableIterator<CharacterIteratorResult> {
     return this;
   }
 }

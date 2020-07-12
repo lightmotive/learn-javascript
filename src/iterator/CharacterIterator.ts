@@ -1,9 +1,9 @@
-export type CharacterWithCode = {
+export interface CharacterIteratorResult {
   char: string;
   charCode: number;
   step: number;
-};
-export class CharacterIterator implements Iterator<CharacterWithCode> {
+}
+export class CharacterIterator implements Iterator<CharacterIteratorResult> {
   constructor(private start: string = "", private step: number = 1) {
     if (!start || start === "") {
       this.start = String.fromCharCode(0);
@@ -20,7 +20,10 @@ export class CharacterIterator implements Iterator<CharacterWithCode> {
     return char.charCodeAt(0);
   }
 
-  next(): IteratorResult<CharacterWithCode, CharacterWithCode | null> {
+  next(): IteratorResult<
+    CharacterIteratorResult,
+    CharacterIteratorResult | null
+  > {
     if (this.currentCharCode <= 65535) {
       const value = {
         done: false,

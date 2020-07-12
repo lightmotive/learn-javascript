@@ -1,32 +1,41 @@
 import { DocumentWithButton } from "../document/DocumentWithButton";
 import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
 import { CharacterRangeIterableIterator } from "./CharacterRangeIterableIterator";
-import { CharacterWithCode, CharacterIterator } from "./CharacterIterator";
+import {
+  CharacterIteratorResult,
+  CharacterIterator,
+} from "./CharacterIterator";
+import { CharacterPrinterWithNext } from "./CharacterPrinterWithNextButton";
+import { CharacterPrinterAll } from "./CharacterPrinter";
 
 export class PrintCharacterRange implements Project {
+  protected charContainer: HTMLDivElement;
+  protected charPrinter: CharacterPrinterAll;
   constructor(
     private document: DocumentWithButton,
-    private charRange: IterableIterator<CharacterWithCode>
-  ) {}
+    private charRange: IterableIterator<CharacterIteratorResult>
+  ) {
+    this.charContainer = this.createCharacterContainer();
+    this.charPrinter = new CharacterPrinterWithNext(this.charContainer);
+  }
 
   render(): void {
     document.body.style.flexDirection = "row";
     this.document.button.onclick = () => {
-      this.printIteration();
+      this.printCharRange();
     };
   }
 
-  private printIteration(): void {
+  private printCharRange(): void {
     this.document.button.style.display = "none";
-
-    const container = this.createContainer();
-    const lastValue = this.printRange(container);
-    this.checkLastValue(lastValue, container);
+    const lastValue = this.charPrinter.printRange(this.charRange);
+    this.charContainer.style.display = "grid";
+    this.initializeNextButton(lastValue);
   }
 
-  private createContainer(): HTMLDivElement {
+  private createCharacterContainer(): HTMLDivElement {
     const container = document.createElement("div");
-    container.style.display = "grid";
+    container.style.display = "none";
     container.style.gridGap = ".1em";
     container.style.width = "50%";
     container.style.maxHeight = "60%";
@@ -40,9 +49,15 @@ export class PrintCharacterRange implements Project {
     return container;
   }
 
-  private createIterateButton(
-    lastValue: CharacterWithCode | null,
-    container: HTMLDivElement
+  private initializeNextButton(lastValue: CharacterIteratorResult | null) {
+    const iterateButton = this.createNextButton(lastValue);
+    if (iterateButton) {
+      this.charContainer.insertAdjacentElement("beforebegin", iterateButton);
+    }
+  }
+
+  private createNextButton(
+    lastValue: CharacterIteratorResult | null
   ): HTMLButtonElement | undefined {
     if (!lastValue) {
       return undefined;
@@ -55,60 +70,16 @@ export class PrintCharacterRange implements Project {
     button.onclick = () => {
       window.setTimeout(() => {
         for (let index = 0; index < 10; index++) {
-          if (!this.printNext(charIterator.next(), container, button)) {
+          const next = charIterator.next();
+          if (next.done) {
+            button.style.display = "none";
             break;
           }
+          this.charPrinter.printNext(charIterator.next());
         }
       }, 0);
     };
     return button;
-  }
-
-  private checkLastValue(
-    lastValue: CharacterWithCode | null,
-    container: HTMLDivElement
-  ) {
-    const iterateButton = this.createIterateButton(lastValue, container);
-    if (iterateButton) {
-      container.insertAdjacentElement("beforebegin", iterateButton);
-    }
-  }
-
-  private printRange(container: HTMLDivElement): CharacterWithCode | null {
-    let lastValue: CharacterWithCode | null = null;
-    for (const value of this.charRange) {
-      this.printCharacter(value, container);
-      lastValue = value;
-    }
-    return lastValue;
-  }
-
-  private printCount = 0;
-  private printCharacter(
-    value: CharacterWithCode | null,
-    container: HTMLDivElement
-  ): CharacterWithCode | null {
-    if (!value) {
-      return null;
-    }
-    const element = document.createElement("span");
-    element.innerHTML = `&#${value.charCode};`;
-    container.appendChild(element);
-    container.scrollTop = container.scrollHeight;
-    this.printCount++;
-    return value;
-  }
-
-  private printNext(
-    next: IteratorResult<CharacterWithCode, CharacterWithCode | null>,
-    container: HTMLDivElement,
-    printNextButton: HTMLButtonElement
-  ): CharacterWithCode | null {
-    if (next.done) {
-      printNextButton.style.display = "none";
-      return null;
-    }
-    return this.printCharacter(next.value, container);
   }
 }
 
