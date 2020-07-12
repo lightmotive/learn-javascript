@@ -2,8 +2,7 @@ export type CharacterWithCode = {
   char: string;
   charCode: number;
 };
-export class CharacterIterator
-  implements Iterator<CharacterWithCode, any, CharacterWithCode> {
+export class CharacterIterator implements Iterator<CharacterWithCode> {
   constructor(private start: string = "", private step: number = 1) {
     if (start === "") {
       this.start = String.fromCharCode(0);
