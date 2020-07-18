@@ -1,17 +1,17 @@
 import { Project } from "../project";
-import { WaitCancelable } from "./WaitCancelable";
-import { WaitIndicatorText } from "./WaitIndicatorText";
+import { ActionAsyncUI } from "./ActionAsyncUI";
+import { TextWaitIndicatorUI } from "./TextWaitIndicatorUI";
 import {
-  WaitCancelableSimulated,
+  SimulatedWaitActionAsyncUI,
   UserCanceledEvent,
-} from "./WaitCancelableSimulated";
+} from "./SimulatedWaitActionAsyncUI";
 import { DocumentWithButton } from "../document/DocumentWithButton";
 import { DocumentWithButtonCentered } from "../document/DocumentWithButtonCentered";
 
 export class WaitIndicator implements Project {
   constructor(
     protected document: DocumentWithButton,
-    protected waitLogic: WaitCancelable<Date>,
+    protected actionAsyncUI: ActionAsyncUI<Date>,
     protected waitCompleteMessage = "Are you more relaxed?"
   ) {}
 
@@ -22,8 +22,8 @@ export class WaitIndicator implements Project {
   }
 
   protected wait(button: HTMLButtonElement): void {
-    this.waitLogic
-      .start(button, "There's always a little time to breathe...")
+    this.actionAsyncUI
+      .execute(button, "There's always a little time to breathe...")
       .then((data) => {
         this.waitResolved(button.innerText, data);
       })
@@ -31,7 +31,7 @@ export class WaitIndicator implements Project {
         this.waitRejected(reason);
       })
       .finally(() => {
-        this.waitLogic.end();
+        this.actionAsyncUI.finally();
       });
   }
 
@@ -65,7 +65,7 @@ export class WaitIndicator implements Project {
 function LoadProject(): void {
   new WaitIndicator(
     new DocumentWithButtonCentered("Click and breathe deeply..."),
-    new WaitCancelableSimulated(WaitIndicatorText)
+    new SimulatedWaitActionAsyncUI(TextWaitIndicatorUI)
   ).render();
 }
 

@@ -1,6 +1,6 @@
-import { WaitIndicator } from "./WaitIndicator";
+import { WaitIndicatorUI } from "./WaitIndicatorUI";
 
-export class WaitIndicatorText implements WaitIndicator {
+export class TextWaitIndicatorUI implements WaitIndicatorUI {
   constructor(
     private inPlaceOfElement: HTMLElement,
     private waitMessageHTML: string,
