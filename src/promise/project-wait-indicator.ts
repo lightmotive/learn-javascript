@@ -1,3 +1,4 @@
+import { Project } from "../project";
 import { WaitCancelable } from "./WaitCancelable";
 import { WaitIndicatorText } from "./WaitIndicatorText";
 import {

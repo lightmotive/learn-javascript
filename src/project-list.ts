@@ -7,15 +7,17 @@ interface ProjectItemLocal {
   topic: string;
   name: string;
   load: () => void;
-  codeURL: string;
+  path?: string;
+  codeURL?: string;
 }
 
-interface ProjectListLocal {
+export interface ProjectListLocal {
   [key: string]: ProjectItemLocal;
 }
 
 export interface ProjectItem extends ProjectItemLocal {
   path: string;
+  codeURL: string;
 }
 
 export interface ProjectList {
@@ -58,14 +60,12 @@ export function loadProjectByKey(key: string | null): void {
  * All values must be specified.
  */
 const projectListLocal: ProjectListLocal = {
-  "project-demo-selector": {
+  "demo-selector": {
     topic: "Associative array (map, dictionary)",
     name: "Project Demo Selector",
     load: () => {
       projectDemoSelector_load();
     },
-    codeURL:
-      "https://github.com/lightmotive/learn-javascript/blob/master/src/project-demo-selector.ts",
   },
   "iterator/character-range": {
     topic: "Iterator",
@@ -73,8 +73,6 @@ const projectListLocal: ProjectListLocal = {
     load: () => {
       iterator_basicIterator_load();
     },
-    codeURL:
-      "https://github.com/lightmotive/learn-javascript/blob/master/src/iterator/project-character-range.ts",
   },
   "promise/wait-indicator": {
     topic: "Promise",
@@ -82,8 +80,6 @@ const projectListLocal: ProjectListLocal = {
     load: () => {
       promise_waitIndicator_load();
     },
-    codeURL:
-      "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-wait-indicator.ts",
   },
   "promise/wait-indicator-async-await": {
     topic: "Promise",
@@ -91,26 +87,79 @@ const projectListLocal: ProjectListLocal = {
     load: () => {
       promise_waitIndicatorAsyncAwait_load();
     },
-    codeURL:
-      "https://github.com/lightmotive/learn-javascript/blob/master/src/promise/project-wait-indicator-async-await.ts",
   },
 };
 
 const projectDemoSelectorKey = Object.keys(projectListLocal)[0];
 
-export function getProjectList(): ProjectList {
-  //Process list
-  return Object.fromEntries(
-    Object.entries(projectListLocal).map(([key, val]) => {
-      const projectItem = val as ProjectItem;
-      projectItem.path = projectItem.path
-        ? projectItem.path
-        : `?project=${encodeURIComponent(key)}`;
-      projectItem.codeURL = `https://github.com/lightmotive/learn-javascript/blob/master/src/${key.replace(
-        "/",
-        "/project-"
-      )}.ts`;
-      return [key, projectItem];
-    })
+function getProjectItemPathOrDefault(
+  key: string,
+  currentPath?: string
+): string {
+  return currentPath ? currentPath : `?project=${encodeURIComponent(key)}`;
+}
+
+function getProjectKeyURIComponent(key: string) {
+  const projectKeyMatch = key.match(/(\/)?([^/]*)$/);
+
+  if (!projectKeyMatch) {
+    throw new Error(
+      "The project key may contain invalid characters, or this is a bug!"
+    );
+  }
+  const projectKeyLastSlash = projectKeyMatch[1];
+  const projectKeyName = projectKeyMatch[2];
+  const projectKeyURIComponent = key.replace(
+    projectKeyMatch[0],
+    `${projectKeyLastSlash ? "/" : ""}project-${encodeURIComponent(
+      projectKeyName
+    )}`
   );
+  return projectKeyURIComponent;
+}
+
+function getCodeURLPathOrDefault(
+  codeURLRoot: string,
+  key: string,
+  codeFileExtension: string,
+  codeURL?: string
+): string {
+  if (codeURL && codeURL.length > 0) {
+    return codeURL;
+  }
+
+  return `${codeURLRoot}/${getProjectKeyURIComponent(
+    key
+  )}.${codeFileExtension}`;
+}
+
+export function getProjectList(
+  data: ProjectListLocal = projectListLocal,
+  codeURLRoot = "https://github.com/lightmotive/learn-javascript/blob/master/src",
+  codeFileExtension = "ts"
+): ProjectList {
+  /*
+    Object.fromEntries is not supported in older browsers. If there's an older browser support
+      requirement, consider adding the NPM package object.fromentries.
+
+    Other packages, like https://www.npmjs.com/package/fromentries, drop older browser
+      support, enabling a much smaller package size.
+  */
+
+  const entries = Object.entries(data).map(([key, val]) => {
+    const projectItem = val as ProjectItem;
+
+    projectItem.path = getProjectItemPathOrDefault(key, val.path);
+
+    projectItem.codeURL = getCodeURLPathOrDefault(
+      codeURLRoot,
+      key,
+      codeFileExtension,
+      val.codeURL
+    );
+
+    return [key, projectItem];
+  });
+
+  return Object.fromEntries(entries);
 }
