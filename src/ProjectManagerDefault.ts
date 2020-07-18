@@ -96,15 +96,19 @@ export class ProjectManagerDefault implements ProjectManager {
     return project;
   }
 
+  loadProjectByKey(key: string | null | undefined): void {
+    this.findProjectByKey(key).load();
+  }
+
   launchProjectByKey(key: string | null | undefined): void {
     const project = this.findProjectByKey(key);
     if (!project) {
       return this.launchProjectByKey(this.defaultProjectKey);
     }
-    window.location.href = project.path;
+    this.setWindowLocationHref(project.path);
   }
 
-  loadProjectByKey(key: string | null | undefined): void {
-    this.findProjectByKey(key).load();
+  private setWindowLocationHref(path: string): void {
+    window.location.href = path;
   }
 }

@@ -1,7 +1,11 @@
+import chai from "chai";
+import spies from "chai-spies";
 import { expect } from "chai";
 import "mocha";
 import { ProjectData } from "./ProjectManager";
 import { ProjectManagerDefault } from "./ProjectManagerDefault";
+
+chai.use(spies);
 
 const projectDataMock: ProjectData = {
   p1: {
@@ -37,21 +41,30 @@ const projectDataMock: ProjectData = {
 };
 
 describe("ProjectManager", () => {
+  const defaultCodeURLRoot = "https://tempuri.org";
+  const defaultCodeFileExtension = "ts";
+
+  const projectManager = new ProjectManagerDefault(
+    projectDataMock,
+    "",
+    defaultCodeURLRoot,
+    defaultCodeFileExtension
+  );
+
+  before(function () {
+    chai.spy.on(projectManager, "setWindowLocationHref", (): void => {
+      return;
+    });
+    chai.spy.on(projectDataMock["topic/sub-topic/p+3"], "load", (): void => {
+      return;
+    });
+  });
+
+  const projectEntries = Object.entries(projectManager.getProjects());
+
   describe("getProjects", () => {
-    const defaultCodeURLRoot = "https://tempuri.org";
-    const defaultCodeFileExtension = "ts";
-
-    const projectManager = new ProjectManagerDefault(
-      projectDataMock,
-      "",
-      defaultCodeURLRoot,
-      defaultCodeFileExtension
-    ).getProjects();
-
-    const projectEntries = Object.entries(projectManager);
-
-    it("should provide all items", () => {
-      expect(Object.keys(projectManager).length).to.equal(
+    it("should provide all entries", () => {
+      expect(Object.keys(projectEntries).length).to.equal(
         Object.keys(projectDataMock).length
       );
     });
@@ -82,6 +95,41 @@ describe("ProjectManager", () => {
       expect(projectEntries[3][1].codeURL).to.equal(
         `https://tempuri.org/customCodeURL`
       );
+    });
+  });
+
+  describe("findProjectByKey", () => {
+    it("should provide default project when key is not found", () => {
+      expect(projectManager.findProjectByKey("").name).to.equal("Project 1");
+    });
+    it("should find project by key", () => {
+      expect(projectManager.findProjectByKey("topic/p.2").name).to.equal(
+        "Project 2"
+      );
+    });
+  });
+
+  describe("launchProjectByKey", () => {
+    it("should have called setWindowLocationHref with project path", () => {
+      const launchSpy = projectManager["setWindowLocationHref"];
+      expect(launchSpy).to.be.spy;
+
+      projectManager.launchProjectByKey("custom-topic");
+
+      expect(launchSpy).to.have.been.called.with(
+        projectManager.findProjectByKey("custom-topic").path
+      );
+    });
+  });
+
+  describe("loadProjectByKey", () => {
+    it("should have called Project 3 load()", () => {
+      const loadSpy = projectDataMock["topic/sub-topic/p+3"].load;
+      expect(loadSpy).to.be.spy;
+
+      projectManager.loadProjectByKey("topic/sub-topic/p+3");
+
+      expect(loadSpy).to.have.been.called();
     });
   });
 });
