@@ -1,8 +1,11 @@
-import { loadProjectByKey } from "./project-list";
+import { projectDemoData } from "./project-demo-data";
+import { ProjectManagerDefault } from "./ProjectManagerDefault";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded");
   const params = new URLSearchParams(window.location.search);
 
-  loadProjectByKey(params.get("project"));
+  new ProjectManagerDefault(projectDemoData).loadProjectByKey(
+    params.get("project")
+  );
 });

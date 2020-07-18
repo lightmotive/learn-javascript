@@ -1,15 +1,10 @@
 import { Project } from "./project";
-
-import {
-  ProjectItem,
-  getPathPrefix,
-  getProjectPath,
-  getProjectList,
-  ProjectList,
-} from "./project-list";
+import { ProjectManager, ProjectItem } from "./ProjectManager";
+import { projectDemoData } from "./project-demo-data";
+import { ProjectManagerDefault } from "./ProjectManagerDefault";
 
 export class ProjectDemoSelector implements Project {
-  constructor(private projectList: ProjectList) {}
+  constructor(private projectManager: ProjectManager) {}
 
   render(): void {
     this.initializeBody();
@@ -26,16 +21,14 @@ export class ProjectDemoSelector implements Project {
     let currentTopicContent = "";
     let currentListElement: HTMLUListElement;
 
-    Object.values(this.projectList).forEach((proj) => {
+    Object.values(this.projectManager.getProjects()).forEach((proj) => {
       ({ currentTopicContent, currentListElement } = this.getListElement(
         proj,
         currentTopicContent,
         currentListElement
       ));
       const listItem = document.createElement("li");
-      listItem.appendChild(
-        this.getProjectDemoLinkElement(getPathPrefix(), proj)
-      );
+      listItem.appendChild(this.getProjectDemoLinkElement(proj));
       const codeSeparatorSpan = document.createElement("span");
       codeSeparatorSpan.innerText = " - ";
       listItem.appendChild(codeSeparatorSpan);
@@ -44,9 +37,9 @@ export class ProjectDemoSelector implements Project {
     });
   }
 
-  private getProjectDemoLinkElement(pathPrefix: string, proj: ProjectItem) {
+  private getProjectDemoLinkElement(proj: ProjectItem) {
     const link = document.createElement("a");
-    link.href = getProjectPath(proj);
+    link.href = proj.path;
     link.target = "_top";
     link.innerHTML = proj.name;
     return link;
@@ -78,7 +71,7 @@ export class ProjectDemoSelector implements Project {
 }
 
 function LoadProject(): void {
-  new ProjectDemoSelector(getProjectList()).render();
+  new ProjectDemoSelector(new ProjectManagerDefault(projectDemoData)).render();
 }
 
 export { LoadProject as projectDemoSelector_load };
